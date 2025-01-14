@@ -15,6 +15,10 @@ module RandomBe
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
+    config.autoload_paths << Rails.root.join('lib')
+    config.paths.add Rails.root.join('lib').to_s, eager_load: true
+    config.active_record.index_nested_attribute_errors = true
+    config.api_only = true
 
     config.session_store :disabled
     # Configuration for the application, engines, and railties goes here.
