@@ -4,18 +4,24 @@ module Api
   module V1
     module User
       class RegistrationsController < Devise::RegistrationsController
-        respond_to :json
+        include SkipSession
+
+        def create
+          build_resource(sign_up_params)
+
+          if resource.save
+            sign_in(resource_name, resource)
+            render_json({ success: true, data: resource }, :ok)
+          else
+            render_json({ success: false, errors: resource.attr_error_with_nested(resource_name) },
+                        :unprocessable_entity)
+          end
+        end
 
         private
 
-        # Xử lý response khi đăng ký thành công
-        def respond_with(resource, _opts = {})
-          if resource.persisted?
-            render json: { message: 'Signed up successfully', user: resource }, status: :ok
-          else
-            render json: { message: 'Sign up failed', errors: resource.errors.full_messages },
-                   status: :unprocessable_entity
-          end
+        def render_json(data, status)
+          render json: data, status:
         end
 
         def sign_up_params

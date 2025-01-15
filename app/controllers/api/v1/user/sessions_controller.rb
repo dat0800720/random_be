@@ -4,16 +4,27 @@ module Api
   module V1
     module User
       class SessionsController < Devise::SessionsController
-        respond_to :json
+        skip_before_action :require_no_authentication, only: :create
 
         private
 
         def respond_with(resource, _opts = {})
-          render json: { message: 'Logged in successfully', user: resource }, status: :ok
+          if current_user
+            render_json({ success: true, data: ::V1::User::UserSerializer.build_response(resource) }, :ok)
+          else
+            render_json(
+              { success: false, errors: resource.attr_error_with_nested(resource_name) },
+              :unprocessable_entity
+            )
+          end
         end
 
         def respond_to_on_destroy
-          render json: { message: 'Logged out successfully' }, status: :ok
+          head :ok
+        end
+
+        def render_json(data, status)
+          render json: data, status:
         end
       end
     end
