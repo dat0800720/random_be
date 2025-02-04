@@ -1,0 +1,4 @@
+devise:
+  jwt:
+    secret: <%= Rails.application.secret_key_base %>
+    expire_access_token_time: 1440

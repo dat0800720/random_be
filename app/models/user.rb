@@ -10,4 +10,8 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   has_many :allowlisted_jwts, dependent: :destroy
+
+  def recoverable_expired?
+    reset_password_sent_at.present? && reset_password_sent_at < self.class.reset_password_within.ago
+  end
 end
