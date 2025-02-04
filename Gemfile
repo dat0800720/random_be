@@ -30,6 +30,10 @@ gem 'jbuilder'
 
 gem 'active_model_serializers'
 
+gem 'dotenv-rails'
+
+gem 'config'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
